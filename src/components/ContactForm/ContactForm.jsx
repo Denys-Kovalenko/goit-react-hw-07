@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addContact } from "../../redux/contactsSlice";
-import { selectContacts } from "../../selectors/contactsSelectors";
+import { addContact } from "../../redux/contactsOps";
+import { selectContacts } from "../../redux/contactsSlice";
+import css from "./ContactForm.module.css";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -11,15 +12,15 @@ export default function ContactForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const normalizedName = name.toLowerCase();
 
-    const normalizedName = name.toLowerCase().trim();
-    const nameExists = contacts.some(
-      (contact) =>
-        typeof contact.name === "string" &&
-        contact.name.toLowerCase() === normalizedName
-    );
-
-    if (nameExists) {
+    if (
+      contacts.some(
+        (contact) =>
+          typeof contact.name === "string" &&
+          contact.name.toLowerCase() === normalizedName
+      )
+    ) {
       alert(`${name} is already in contacts.`);
       return;
     }
@@ -30,25 +31,34 @@ export default function ContactForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: 10 }}
-    >
-      <input
-        type="text"
-        placeholder="Name"
-        required
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="tel"
-        placeholder="Phone number"
-        required
-        value={number}
-        onChange={(e) => setNumber(e.target.value)}
-      />
-      <button type="submit">Add contact</button>
+    <form onSubmit={handleSubmit} className={css.form}>
+      <label className={css.label}>
+        Name
+        <input
+          type="text"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          className={css.input}
+        />
+      </label>
+
+      <label className={css.label}>
+        Number
+        <input
+          type="tel"
+          name="number"
+          value={number}
+          onChange={(e) => setNumber(e.target.value)}
+          required
+          className={css.input}
+        />
+      </label>
+
+      <button type="submit" className={css.button}>
+        Add contact
+      </button>
     </form>
   );
 }
